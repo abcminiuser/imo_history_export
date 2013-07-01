@@ -37,27 +37,46 @@
 import json
 import sys
 
-if len(sys.argv) != 3:
-	print "Usage: python imo_history_dump.py <imo_history_filename> <user_email_to_dump>"
-	exit(1)
-
-imo_history_filename = sys.argv[1]
-user_email_to_dump   = sys.argv[2]
-
-
-with open(imo_history_filename, 'r') as f:
-	read_data = f.read()
-	json_data = json.loads(read_data)
-
-	print "Chat history for '%s':" % user_email_to_dump
+def dump_user_history(log_data, user_email):
+	print "\n"
+	print "Chat history for '%s':" % user_email
 	print "====================================="
 
-	recipients = {"me" : "Them", user_email_to_dump : "Me"}
+	recipients = {"me" : "Them", user_email : "Me"}
 
-	for m in json_data[user_email_to_dump]:
+	for m in log_data[user_email]:
 		formatted_string = "%s\t%s\t%s" % (m['timestamp'], recipients[m['to']], m['message'])
 		print formatted_string.encode('ascii', 'ignore')
 
 	print "====================================="
 
-f.closed
+
+def main():
+	if len(sys.argv) < 2:
+		print "Usage: python imo_history_dump.py <imo_history_filename> [user_email_to_dump]"
+		exit(1)
+
+	imo_history_filename = sys.argv[1]
+
+	try:
+		user_email_to_dump = sys.argv[2]
+	except:
+		user_email_to_dump = None
+
+	with open(imo_history_filename, 'r') as f:
+		read_data = f.read()
+		json_data = json.loads(read_data)
+
+		if user_email_to_dump is None:
+			for u in json_data:
+				dump_user_history(json_data, u)
+		elif user_email_to_dump in json_data:
+			dump_user_history(json_data, user_email_to_dump)
+		else:
+			print "Specified user '%s' not found in log file." % user_email_to_dump
+
+	f.closed
+
+
+if __name__ == "__main__":
+    main()

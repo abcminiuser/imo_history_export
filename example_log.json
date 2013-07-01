@@ -1,0 +1,16 @@
+{
+  "user@example.com": [
+         {
+           "from": "me",
+           "message": "Test message from me to Example User",
+           "timestamp": "2012-11-26 07:21:45",
+           "to": "user@example.com"
+         },
+         {
+           "from": "user@example.com",
+           "message": "Test message from Example User to me",
+           "timestamp": "2012-11-26 07:22:57",
+           "to": "me"
+         }
+    ]
+}

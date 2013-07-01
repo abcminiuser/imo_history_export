@@ -38,8 +38,7 @@ import json
 import sys
 
 def dump_user_history(log_data, user_email):
-	print "\n"
-	print "Chat history for '%s':" % user_email
+	print "\nChat history for '%s':" % user_email
 	print "====================================="
 
 	recipients = {"me" : "Them", user_email : "Me"}
@@ -63,20 +62,20 @@ def main():
 	except:
 		user_email_to_dump = None
 
-	with open(imo_history_filename, 'r') as f:
-		read_data = f.read()
-		json_data = json.loads(read_data)
+	try:
+		with open(imo_history_filename, 'r') as f:
+			read_data = f.read()
+			json_data = json.loads(read_data)
 
-		if user_email_to_dump is None:
-			for u in json_data:
-				dump_user_history(json_data, u)
-		elif user_email_to_dump in json_data:
-			dump_user_history(json_data, user_email_to_dump)
-		else:
-			print "Specified user '%s' not found in log file." % user_email_to_dump
-
-	f.closed
-
+			if user_email_to_dump is None:
+				for u in json_data:
+					dump_user_history(json_data, u)
+			elif user_email_to_dump in json_data:
+				dump_user_history(json_data, user_email_to_dump)
+			else:
+				print "Specified user '%s' not found in log file." % user_email_to_dump
+	except IOError:
+		print "Could not open log file '%s'." % imo_history_filename
 
 if __name__ == "__main__":
     main()
